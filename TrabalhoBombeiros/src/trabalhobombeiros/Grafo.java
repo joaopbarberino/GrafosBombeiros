@@ -76,8 +76,8 @@ public class Grafo {
     // verifica se uma inserção formará um ciclo no grafo
     public boolean formaCiclo(int v, int w) {
         this.insereA(v, w);
-        //int visitados[] = new int[this.V];
-        boolean visitados[] = new boolean[this.V];
+        int visitados[] = new int[this.V];
+        //boolean visitados[] = new boolean[this.V];
         boolean ciclo = false;
         ciclo = busca_ciclo(v, w, visitados, ciclo);
         this.removeA(v, w);
@@ -115,25 +115,6 @@ public class Grafo {
     }
    
     
-    public boolean busca_ciclo(int v, int f, boolean visitados[], boolean ciclo) {
-        //marque v como visitado
-        visitados[v] = true;
-        
-
-        //para Cada vértice w adjacente a v faça
-        for (int w = 1; w < this.V; w++) {// w anda na linha da matriz
-            // se w eh adjacente a v E
-            // se w não foi visitado então
-            if (this.adj[v][w] == 1 && visitados[w] == false) {
-                busca_prof(w, visitados);
-            } else if (this.adj[v][w] == 1 && visitados[w] == true && w == f){
-                ciclo = true;
-            }
-        }
-        return ciclo;
-    }
-    
-    /*
     public boolean busca_ciclo(int v, int finaL, int visitados[], boolean ciclo) {
         //marque v como visitado
         visitados[v]++;
@@ -147,6 +128,26 @@ public class Grafo {
                 busca_ciclo(w, finaL, visitados, ciclo);
 
             } else if (this.adj[v][w] == 1 && visitados[v] > finaL/1.5) {
+                ciclo = true;
+            }
+        }
+        return ciclo;
+    }
+    
+    /*
+    public boolean busca_ciclo(int v, int verticeY, boolean visitados[], boolean ciclo) {
+       
+        //marque v como visitado
+        visitados[v] = true;
+        
+
+        //para Cada vértice w adjacente a v faça
+        for (int w = 1; w < this.V; w++) {// w anda na linha da matriz
+            // se w eh adjacente a v E
+            // se w não foi visitado então
+            if (this.adj[v][w] == 1 && visitados[w] == false) {
+                busca_ciclo(w, verticeY, visitados, ciclo);
+            } else if (this.adj[v][w] == 1 && visitados[w] == true && w == verticeY){
                 ciclo = true;
             }
         }

@@ -38,8 +38,8 @@ public class TrabalhoBombeiros {
         linha = objBufferizado.readLine();
         vetorString = linha.split(" ");
         verticeDestino = Integer.parseInt(vetorString[0]);
-        //System.out.println("O incêndio está no vértice: " + verticeDestino);
-        //System.out.println("Erros: ");
+        System.out.println("O incêndio está no vértice: " + verticeDestino);
+        System.out.println("Erros: ");
 
         // Instancia o grafo
         Grafo objGrafo, objGrafoCiclo;
@@ -56,7 +56,7 @@ public class TrabalhoBombeiros {
                 break;
             } else {
 
-                switch (tratamentoDeEntrada(verticeX, verticeY, objGrafo, objGrafoCiclo)) {
+                switch (tratamentoDeEntrada(verticeX, verticeY, objGrafo, objGrafoCiclo, verticeDestino)) {
                     // Caso entrada seja válida
                     case 1:
                         objGrafo.insereA(verticeX, verticeY);
@@ -66,42 +66,42 @@ public class TrabalhoBombeiros {
 
                     // Caso vertices sejam iguais
                     case 2:
-                        //System.out.println("Par X: " + verticeX + " Y: " + verticeY
-                        //        + ". Os vértices devem ser diferentes!");
+                        System.out.println("Par X: " + verticeX + " Y: " + verticeY
+                                + ". Os vértices devem ser diferentes!");
                         break;
 
                     // Caso já exista uma aresta X Y
                     case 3:
-                        //System.out.println("Par X: " + verticeX + " Y: " + verticeY
-                        //        + ". Essa aresta já foi inserida!");
+                        System.out.println("Par X: " + verticeX + " Y: " + verticeY
+                                + ". Essa aresta já foi inserida!");
                         break;
                         
                     // Caso já exista uma aresta Y X, ou seja, uma mão dupla
                     case 4:
-                        //System.out.println("Par X: " + verticeX + " Y: " + verticeY
-                        //        + ". Não pode haver mão dupla!");
+                        System.out.println("Par X: " + verticeX + " Y: " + verticeY
+                                + ". Não pode haver mão dupla!");
                         break;
 
                     // Caso forme um ciclo
                     case 5:
-                        //System.out.println("Par X: " + verticeX +  " Y: " + verticeY
-                        //         + ". Essa aresta formará um ciclo!");
+                        System.out.println("Par X: " + verticeX +  " Y: " + verticeY
+                                 + ". Essa aresta formará um ciclo!");
                         break;
                 }
             }
         }
 
-        //System.out.println("");
-        //System.out.println("Grafo: ");
-        //objGrafo.mostra();
+        System.out.println("");
+        System.out.println("Grafo: ");
+        objGrafo.mostra();
 
-       /// System.out.println("");
-        //objGrafo.mostraCaminhos(1, verticeDestino);
-        //System.out.println("");
+        System.out.println("");
+        objGrafo.mostraCaminhos(1, verticeDestino);
+        System.out.println("");
 
     }
 
-    public static int tratamentoDeEntrada(int verticeX, int verticeY, Grafo objGrafo, Grafo objGrafoCiclo) {
+    public static int tratamentoDeEntrada(int verticeX, int verticeY, Grafo objGrafo, Grafo objGrafoCiclo, int verticeDestino) {
         if ((verticeX == verticeY) && (verticeX != 0 && verticeY != 0)) {
             return 2;
         }
