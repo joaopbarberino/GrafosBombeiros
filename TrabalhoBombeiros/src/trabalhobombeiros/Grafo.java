@@ -86,54 +86,44 @@ public class Grafo {
         return ciclo;
     }
 
-    public void reseta_visitados(boolean visitados[]) {
-        for (int i = 0; i < visitados.length; i++) {
-            visitados[i] = false;
-        }
-    }
-
     public void mostraCaminhos(int verticePartida, int verticeDestino) {
         // cria o vetor de visitados
         boolean visitados[] = new boolean[this.V];
+        int removControl = 0;
         int recControl = 0;
-        ArrayList<Integer> primeiro_caminho = new ArrayList();
-        ArrayList<Integer> caminho_aux = new ArrayList();
+        ArrayList<Integer> caminho = new ArrayList<>();
+        ArrayList<Integer> caminho_aux = new ArrayList<>();
         System.out.println("Rotas: ");
-        busca_prof(verticePartida, verticeDestino, recControl, primeiro_caminho);
-        
+        busca_prof(verticePartida, verticeDestino, caminho, caminho_aux);
+
     }
+    int teste = 0;
 
     // implementacao da busca em profundidade a partir de somente um vertice
-    public void busca_prof(int v, int verticeDestino, int recControl, ArrayList caminho) {
-        //marque v como visitado
-       
-        caminho.add(v);
-        if (caminho.contains(verticeDestino)) {
-            System.out.println("Depois de adicionar: ");
-            System.out.println(caminho);
-            //caminho.clear();
-            System.out.println("recControl: "+ recControl);
-            System.out.println("");
-            Object numeroRemovido;
-            
-//            for (int i = 0; i < 2 + recControl; i++) {
-//                // Pega o ultimo numero da lista
-//                numeroRemovido = caminho.get(caminho.size() - 1);
-//                // Remove o ultimo numero da lista
-//                caminho.remove(numeroRemovido);
-//            }
-//            System.out.println("Depois de remover: ");
-//            System.out.println(caminho);
-//            System.out.println("");
-        }
 
+    public void busca_prof(int v, int verticeDestino, ArrayList caminho, ArrayList caminho_aux) {
+        //marque v como visitado
+        caminho.add(v);
+        caminho_aux.add(v);
+        if (v == 6) {
+            System.out.println("Caminho: " + caminho);
+            System.out.println("Caminho aux: " + caminho_aux);
+            if (teste != 0) {
+                for (int i = 0; i < caminho_aux.size(); i++) {
+                    caminho.remove(caminho.size() - 1);
+                }
+            }
+            teste++;
+            caminho_aux.clear();
+        }
         //para Cada vértice w adjacente a v faça
         for (int w = 0; w < this.V; w++) {// w anda na linha da matriz
             // se w eh adjacente a v 
             if (this.adj[v][w] == 1) {
-                busca_prof(w, verticeDestino, recControl + 1, caminho);
+                busca_prof(w, verticeDestino, caminho, caminho_aux);
             }
         }
+
     }
 
     public boolean busca_ciclo(int v, int finaL, int visitados[], boolean ciclo) {

@@ -31,7 +31,7 @@ public class TrabalhoBombeiros {
         objBufferizado = new BufferedReader(objLeitura);
 
         String linha, vetorString[];
-        int verticeDestino, verticeX = 1, verticeY = 1;
+        int verticeDestino, verticeX, verticeY;
 
         // Pega o vértice final do caminho, ou seja,
         // onde está acontecendo o incêndio.
