@@ -99,7 +99,7 @@ public class Grafo {
         ArrayList<Integer> primeiro_caminho = new ArrayList();
         ArrayList<Integer> caminho_aux = new ArrayList();
         System.out.println("Rotas: ");
-        busca_prof(s, visitados);
+        busca_prof(s, verticeDestino, visitados, primeiro_caminho);
         // primeira_busca_prof(s, visitados, primeiro_caminho, verticeDestino);
         //System.out.println(primeiro_caminho);
         //for(int i = 0; i < visitados.length; i ++)
@@ -111,59 +111,30 @@ public class Grafo {
     }
 
     // implementacao da busca em profundidade a partir de somente um vertice
-    public boolean[] primeira_busca_prof(int v, boolean visitados[], ArrayList primeiro_caminho, int verticeDestino) {
-        //marque v como visitado
-        visitados[v] = true;
-
-        primeiro_caminho.add(v);
-
-        //para Cada vértice w adjacente a v faça
-        for (int w = 1; w < this.V; w++) {// w anda na linha da matriz
-            // se w eh adjacente a v E
-            // se w não foi visitado então
-            if (this.adj[v][w] == 1 && visitados[w] == false && visitados[verticeDestino] == false) {
-                primeira_busca_prof(w, visitados, primeiro_caminho, verticeDestino);
-            }
-        }
-        return visitados;
-    }
-
-    public void busca_prof_aux(int v, boolean visitados[], ArrayList primeiro_caminho, ArrayList caminho_aux, int verticeDestino) {
-        //marque v como visitado
-        visitados[v] = true;
-        System.out.println(v);
-    //if(primeiro_caminho.contains(v))
-        caminho_aux.add(v);
-        
-    //compara_caminhos(v, primeiro_caminho, caminho_aux);
-        //para Cada vértice w adjacente a v faça
-        for (int w = 1; w < this.V; w++) {// w anda na linha da matriz
-            // se w eh adjacente a v E
-            // se w não foi visitado então
-            if (this.adj[v][w] == 1) {
-
-                busca_prof_aux(w, visitados, primeiro_caminho, caminho_aux, verticeDestino);
-            }
-        }
-    }
-
     public ArrayList compara_caminhos(int v, ArrayList primeiro_caminho, ArrayList caminho_aux) {
 
         return caminho_aux;
     }
 
-    public void busca_prof(int v, boolean visitados[]) {
+    public void busca_prof(int v, int verticeDestino, boolean visitados[], ArrayList primeiro_caminho) {
         //marque v como visitado
         visitados[v] = true;
-        System.out.println(v + " ");
+        primeiro_caminho.add(v);
+        if (primeiro_caminho.contains(verticeDestino)) {
+            System.out.println(primeiro_caminho);
+            primeiro_caminho.clear();
+        }
 
         //para Cada vértice w adjacente a v faça
         for (int w = 1; w < this.V; w++) {// w anda na linha da matriz
             // se w eh adjacente a v E
             // se w não foi visitado então
-            if (this.adj[v][w] == 1) {
-
-                busca_prof(w, visitados);
+            if (this.adj[v][w] == 1 && visitados[verticeDestino] == false) {
+                busca_prof(w, verticeDestino, visitados, primeiro_caminho);
+            } else {
+                for (int i = 0; i < visitados.length; i++) {
+                    visitados[i] = false;
+                }
             }
         }
     }
