@@ -100,20 +100,28 @@ public class Grafo {
     int teste = 0;
 
     // implementacao da busca em profundidade a partir de somente um vertice
-
     public void busca_prof(int v, int verticeDestino, ArrayList caminho, ArrayList caminho_aux) {
-        //marque v como visitado
-        caminho.add(v);
-        caminho_aux.add(v);
-        if (v == 6) {
-            System.out.println("Caminho: " + caminho);
-            System.out.println("Caminho aux: " + caminho_aux);
-            if (teste != 0) {
-                for (int i = 0; i < caminho_aux.size(); i++) {
-                    caminho.remove(caminho.size() - 1);
-                }
-            }
+        //Caminho só vai pegar o caminho na primeiríssima chamada da função
+        if (teste == 0)
+            caminho.add(v);       
+        //Caminho aux pega as outras
+        if (teste != 0)
+            caminho_aux.add(v);
+        //Quando chegar no fim do caminho
+        if (v == verticeDestino) {
+            System.out.println("Caux :" + caminho_aux);            
+            //Tira os ultimos elementos do caminho com base no tamanho do caminho aux
+            caminho_aux.stream().forEach((_item) -> {
+                caminho.remove(caminho.size() - 1);
+            });
+            //Põe o caminho aux no fim do caminho
+            caminho_aux.stream().forEach((caminho_aux1) -> {
+                caminho.add(caminho_aux1);
+            });
+            System.out.println("Caminho :" + caminho);
+            // Controla quantas vezes a função foi chamada (só a 1ª importa)
             teste++;
+            // Limpa o caminho aux pra ele só pegar finais novos
             caminho_aux.clear();
         }
         //para Cada vértice w adjacente a v faça
