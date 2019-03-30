@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
+
 /**
  *
  * @author joao.pbsilva20
@@ -42,10 +43,8 @@ public class TrabalhoBombeiros {
         System.out.println("Erros: ");
 
         // Instancia o grafo
-        Grafo objGrafo, objGrafoCiclo;
+        Grafo objGrafo;
         objGrafo = new Grafo(21);
-        objGrafoCiclo = new Grafo(21);
-
         while (linha != "0 0") {
             linha = objBufferizado.readLine();
             vetorString = linha.split(" ");
@@ -56,12 +55,11 @@ public class TrabalhoBombeiros {
                 break;
             } else {
 
-                switch (tratamentoDeEntrada(verticeX, verticeY, objGrafo, objGrafoCiclo, verticeDestino)) {
+                switch (tratamentoDeEntrada(verticeX, verticeY, objGrafo, verticeDestino)) {
                     // Caso entrada seja válida
                     case 1:
                         objGrafo.insereA(verticeX, verticeY);
-                        objGrafoCiclo.insereA(verticeX, verticeY);
-                        
+
                         break;
 
                     // Caso vertices sejam iguais
@@ -75,7 +73,7 @@ public class TrabalhoBombeiros {
                         System.out.println("Par X: " + verticeX + " Y: " + verticeY
                                 + ". Essa aresta já foi inserida!");
                         break;
-                        
+
                     // Caso já exista uma aresta Y X, ou seja, uma mão dupla
                     case 4:
                         System.out.println("Par X: " + verticeX + " Y: " + verticeY
@@ -84,8 +82,8 @@ public class TrabalhoBombeiros {
 
                     // Caso forme um ciclo
                     case 5:
-                        System.out.println("Par X: " + verticeX +  " Y: " + verticeY
-                                 + ". Essa aresta formará um ciclo!");
+                        System.out.println("Par X: " + verticeX + " Y: " + verticeY
+                                + ". Essa aresta formará um ciclo!");
                         break;
                 }
             }
@@ -98,10 +96,11 @@ public class TrabalhoBombeiros {
         System.out.println("");
         objGrafo.mostraCaminhos(1, verticeDestino);
         System.out.println("");
+        System.out.println("Existem: " + objGrafo.getQtdCaminho() + " caminho(s) até o incêndio.");
 
     }
 
-    public static int tratamentoDeEntrada(int verticeX, int verticeY, Grafo objGrafo, Grafo objGrafoCiclo, int verticeDestino) {
+    public static int tratamentoDeEntrada(int verticeX, int verticeY, Grafo objGrafo, int verticeDestino) {
         if ((verticeX == verticeY) && (verticeX != 0 && verticeY != 0)) {
             return 2;
         }
@@ -114,7 +113,7 @@ public class TrabalhoBombeiros {
             return 4;
         }
 
-        if (objGrafoCiclo.formaCiclo(verticeX, verticeY)) {
+        if (objGrafo.formaCiclo(verticeX, verticeY)) {
             return 5;
         }
 

@@ -7,20 +7,24 @@ public class Grafo {
     private int V; // número de vértices
     private int A; // número de arestas
     private int adj[][]; // matriz de adjcência
+    private int qtdCaminho; // quantos caminhos existem de um vértice a outro
 
     // inicializa os atributos da classe e cria a 
     // matriz de adjacência para V vértices
     public Grafo(int V) {
         this.V = V;
         this.A = 0; // nao tenho nenhuma aresta
+        this.qtdCaminho = 0; // nao ha nenhum caminho no começo
         // criar a matriz de adjacencia
         adj = new int[V][V];
     }
-
-    public int getA() {
-        return this.A;
+    
+    // retorna quantos caminhos o grafo atual tem até um determinado caminho
+    // esse atributo é controlado pelo método mostraCaminhos.
+    public int getQtdCaminho(){
+        return qtdCaminho;
     }
-
+    
     /*
      Método insere uma aresta v-w no grafo. O método supõe 
      que v e w são distintos, positivos e menores que V. 
@@ -34,7 +38,7 @@ public class Grafo {
             this.A++;
         }
     }
-
+    // Remove uma dada aresta do grafo
     public void removeA(int v, int w) {
         if (this.adj[v][w] == 1) {
             this.adj[v][w] = 0;
@@ -47,9 +51,9 @@ public class Grafo {
      em uma linha, todos os vértices adjacentes a v. 
      */
     public void mostra() {
-        for (int v = 0; v < 7; v++) {
+        for (int v = 1; v < this.A; v++) {
             System.out.print(v + ":");
-            for (int w = 0; w < this.V; w++) {
+            for (int w = 1; w < this.V; w++) {
                 if (this.adj[v][w] == 1) {
                     System.out.print(" " + w);
                 }
@@ -79,7 +83,6 @@ public class Grafo {
     public boolean formaCiclo(int v, int w) {
         this.insereA(v, w);
         int visitados[] = new int[this.V];
-        //boolean visitados[] = new boolean[this.V];
         boolean ciclo = false;
         ciclo = busca_ciclo(v, w, visitados, ciclo);
         this.removeA(v, w);
@@ -88,89 +91,52 @@ public class Grafo {
 
     public void mostraCaminhos(int verticePartida, int verticeDestino) {
         // cria o vetor de visitados
-        boolean visitados[] = new boolean[this.V];
-        int removControl = 0;
-        int recControl = 0;
         ArrayList<Integer> caminho = new ArrayList<>();
         ArrayList<Integer> caminho_aux = new ArrayList<>();
         System.out.println("Rotas: ");
-        busca_prof(verticePartida, verticeDestino, caminho, caminho_aux);
-
+        busca_prof(verticePartida, verticeDestino, caminho);
     }
-    int teste = 0;
 
     // implementacao da busca em profundidade a partir de somente um vertice
-    public void busca_prof(int v, int verticeDestino, ArrayList caminho, ArrayList caminho_aux) {
-        //Caminho só vai pegar o caminho na primeiríssima chamada da função
-        if (teste == 0)
-            caminho.add(v);       
-        //Caminho aux pega as outras
-        if (teste != 0)
-            caminho_aux.add(v);
-        //Quando chegar no fim do caminho
+    public void busca_prof(int v, int verticeDestino, ArrayList caminho) {
+        caminho.add(v);
+        // Se o caminho chegou ao destino
         if (v == verticeDestino) {
-            System.out.println("Caux :" + caminho_aux);            
-            //Tira os ultimos elementos do caminho com base no tamanho do caminho aux
-            caminho_aux.stream().forEach((_item) -> {
-                caminho.remove(caminho.size() - 1);
-            });
-            //Põe o caminho aux no fim do caminho
-            caminho_aux.stream().forEach((caminho_aux1) -> {
-                caminho.add(caminho_aux1);
-            });
-            System.out.println("Caminho :" + caminho);
-            // Controla quantas vezes a função foi chamada (só a 1ª importa)
-            teste++;
-            // Limpa o caminho aux pra ele só pegar finais novos
-            caminho_aux.clear();
+            this.qtdCaminho++;
+            for (int i = 0; i < caminho.size(); i++) {
+                if (i < caminho.size() - 1) {
+                    System.out.printf(caminho.get(i) + " → ");
+                } else if (i == caminho.size() - 1) {
+                    System.out.println(caminho.get(i));
+                }
+            }
         }
-        //para Cada vértice w adjacente a v faça
         for (int w = 0; w < this.V; w++) {// w anda na linha da matriz
             // se w eh adjacente a v 
             if (this.adj[v][w] == 1) {
-                busca_prof(w, verticeDestino, caminho, caminho_aux);
+                busca_prof(w, verticeDestino, caminho);
+                caminho.remove(caminho.indexOf(w));
             }
+
         }
 
     }
 
     public boolean busca_ciclo(int v, int finaL, int visitados[], boolean ciclo) {
-        //marque v como visitado
+        //conta quantas vezes v foi 
         visitados[v]++;
-
         //para Cada vértice w adjacente a v faça
         for (int w = 1; w < this.V; w++) {// w anda na linha da matriz
             // se w eh adjacente a v E
-            // se w não foi visitado então
+            // se w não foi visitado então        
 
-            if (this.adj[v][w] == 1 && visitados[v] < finaL / 1.5) {
+            if (this.adj[v][w] == 1 && visitados[v] < 2) {
                 busca_ciclo(w, finaL, visitados, ciclo);
 
-            } else if (this.adj[v][w] == 1 && visitados[v] > finaL / 1.5) {
+            } else if (this.adj[v][w] == 1 && visitados[v] > finaL / 2) {
                 ciclo = true;
             }
         }
         return ciclo;
     }
-
-    /*
-     public boolean busca_ciclo(int v, int verticeY, boolean visitados[], boolean ciclo) {
-       
-     //marque v como visitado
-     visitados[v] = true;
-        
-
-     //para Cada vértice w adjacente a v faça
-     for (int w = 1; w < this.V; w++) {// w anda na linha da matriz
-     // se w eh adjacente a v E
-     // se w não foi visitado então
-     if (this.adj[v][w] == 1 && visitados[w] == false) {
-     busca_ciclo(w, verticeY, visitados, ciclo);
-     } else if (this.adj[v][w] == 1 && visitados[w] == true && w == verticeY){
-     ciclo = true;
-     }
-     }
-     return ciclo;
-     }
-     */
 }
