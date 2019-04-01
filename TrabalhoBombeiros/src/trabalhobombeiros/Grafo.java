@@ -4,12 +4,12 @@ import java.util.*;
 
 public class Grafo {
 
-    private int V; // número de vértices
-    private int A; // número de arestas
-    private int adj[][]; // matriz de adjcência
-    private int qtdCaminho; // quantos caminhos existem de um vértice a outro
+    private int V; // Número de vértices
+    private int A; // Número de arestas
+    private int adj[][]; // Natriz de adjcência
+    private int qtdCaminho; // Quantos caminhos existem de um vértice a outro
 
-    // inicializa os atributos da classe e cria a 
+    // Inicializa os atributos da classe e cria a 
     // matriz de adjacência para V vértices
     public Grafo(int V) {
         this.V = V;
@@ -19,10 +19,16 @@ public class Grafo {
         adj = new int[V][V];
     }
 
-    // retorna quantos caminhos o grafo atual tem até um determinado caminho
-    // esse atributo é controlado pelo método mostraCaminhos.
+    // Retorna quantos caminhos o grafo atual tem entre um dado vértice inicial
+    // e outro final, após a busca de caminhos, feita no método "mostraCaminhos"
     public int getQtdCaminho() {
         return qtdCaminho;
+    }
+
+    // Método que permite zerar a quantidade de caminhos, caso, se por alguma
+    // razão, os vértices inicial e final mudem após a inicialização do programa
+    public void resetQtdCaminho() {
+        this.qtdCaminho = 0;
     }
 
     /*
@@ -39,7 +45,7 @@ public class Grafo {
         }
     }
 
-    // Remove uma dada aresta do grafo
+    // Remove uma dada aresta v-w do grafo
     public void removeA(int v, int w) {
         this.adj[v][w] = 0;
         this.A = this.A - 1;
@@ -50,9 +56,9 @@ public class Grafo {
      em uma linha, todos os vértices adjacentes a v. 
      */
     public void mostra() {
-        for (int v = 1; v < this.A; v++) {
+        for (int v = 0; v < this.A; v++) {
             System.out.print(v + ":");
-            for (int w = 1; w < this.V; w++) {
+            for (int w = 0; w < this.V; w++) {
                 if (this.adj[v][w] == 1) {
                     System.out.print(" " + w);
                 }
@@ -61,7 +67,7 @@ public class Grafo {
         }
     }
 
-    // calcula o grau de entrada de um vértice
+    // Calcula o grau de entrada de um vértice
     public int indeg(int v) {
         int grauEntrada = 0;
         for (int i = 0; i < this.V; i++) {
@@ -70,32 +76,39 @@ public class Grafo {
         return grauEntrada;
     }
 
-    // procura uma aresta no grafo
+    // Procura uma aresta no grafo
     public boolean procuraA(int v, int w) {
         return this.adj[v][w] == 1;
     }
 
-    // verifica se uma inserção formará um ciclo no grafo
+    // Verifica se uma inserção de aresta formará um ciclo no grafo
     public boolean formaCiclo(int v, int w) {
+        // Adiciona a aresta ao grafo para fazer o teste
         this.insereA(v, w);
         boolean ciclo = false, visitados[] = new boolean[this.V];
         ciclo = busca_ciclo(w, ciclo, visitados);
+        // Remove pois, idenpendente do valor de ciclo, a funçãop desse método é
+        // procurar um ciclo no grafo, e não adicionar uma aresta a ele
         this.removeA(v, w);
         return ciclo;
     }
 
+    // Procura todos os caminhos possíveis entra o verticePartida e o
+    // verticeDestino e os imprime enquanto procura
     public void mostraCaminhos(int verticePartida, int verticeDestino) {
-        // cria o vetor de visitados
+        // Cria o vetor que guardará e mostrará um caminho por vez
         ArrayList<Integer> caminho = new ArrayList<>();
         System.out.println("Rotas: ");
-        busca_prof(verticePartida, verticeDestino, caminho);
+        busca_caminho(verticePartida, verticeDestino, caminho);
     }
 
-    // implementacao da busca em profundidade a partir de somente um vertice
-    public void busca_prof(int v, int verticeDestino, ArrayList caminho) {
+    // Busca em profundidade para identificar todos os caminhos possíveis
+    public void busca_caminho(int v, int verticeDestino, ArrayList caminho) {
+        // Adiciona o vértice atual ao caminho
         caminho.add(v);
-        // Se o caminho chegou ao destino
+        // Se o caminho chegou ao vértice destino, imprime o caminho
         if (v == verticeDestino) {
+            // Incrementa a quantidade de caminhos do Grafo
             this.qtdCaminho++;
             for (int i = 0; i < caminho.size(); i++) {
                 if (i < caminho.size() - 1) {
@@ -106,22 +119,32 @@ public class Grafo {
             }
         }
         for (int w = 0; w < this.V; w++) {// w anda na linha da matriz
-            // se w eh adjacente a v 
+            // Se w eh adjacente a v 
             if (this.adj[v][w] == 1) {
-                busca_prof(w, verticeDestino, caminho);
+                busca_caminho(w, verticeDestino, caminho);
+                // Na volta da recursividade, remove
+                // o adjacente atual do caminho para forçar o 
+                // programa a ir para as outras possibilidades
                 caminho.remove(caminho.indexOf(w));
             }
         }
     }
 
+    // Busca em profundidade para identificar todos os ciclos possíveis
     public boolean busca_ciclo(int v, boolean ciclo, boolean[] visitados) {
+        // Visita o vértice atual
         visitados[v] = true;
-        for (int w = 0; w < this.V; w++) {
+        for (int w = 0; w < this.V; w++) { // w anda na linha da matriz
+            // Se v-w é uma aresta e w não foi visitado
             if (this.adj[v][w] == 1 && !visitados[w]) {
                 busca_ciclo(w, ciclo, visitados);
-            } else if (this.adj[w][v] == 1 && visitados[w]) {
+            } // Se, antes e depois davolta da recursividade
+              // w-v é uma aresta e w foi visitado
+            else if (this.adj[w][v] == 1 && visitados[w]) {
+                // É um ciclo
                 ciclo = true;
             }
+            
         }
         return ciclo;
     }
