@@ -9,18 +9,14 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
 
 /**
  *
- * @author joao.pbsilva20
+ * @author João Pedro Barberino Silva Centro Universitário Senac Santo Amaro
+ * Jogos Digitais - 3º Semestre
  */
 public class TrabalhoBombeiros {
 
-    /**
-     * @param args the command line arguments
-     * @throws java.io.FileNotFoundException
-     */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         //Abre um arquivo e atribui o objeto de leitura
         //a uma variavel da classe FileReader
@@ -32,7 +28,7 @@ public class TrabalhoBombeiros {
         objBufferizado = new BufferedReader(objLeitura);
 
         String linha, vetorString[];
-        int verticeDestino, verticeX, verticeY;
+        int verticeBombeiros = 1, verticeDestino, verticeX, verticeY;
 
         // Pega o vértice final do caminho, ou seja,
         // onde está acontecendo o incêndio.
@@ -46,44 +42,41 @@ public class TrabalhoBombeiros {
         Grafo objGrafo;
         objGrafo = new Grafo(21);
         while (linha != "0 0") {
+            // Pega uma linha de vértices no format "X Y"
             linha = objBufferizado.readLine();
+            // Separa a linha em X e Y e armazena
             vetorString = linha.split(" ");
             verticeX = Integer.parseInt(vetorString[0]);
             verticeY = Integer.parseInt(vetorString[1]);
 
+            // Condição de parada de leitura
             if (verticeX == 0 && verticeY == 0) {
                 break;
             } else {
-
-                switch (tratamentoDeEntrada(verticeX, verticeY, objGrafo, verticeDestino)) {
-                    // Caso entrada seja válida
+                // Validação da entrada
+                switch (validaDeEntrada(verticeX, verticeY, objGrafo)) {
                     case 1:
                         objGrafo.insereA(verticeX, verticeY);
-
                         break;
 
-                    // Caso vertices sejam iguais
                     case 2:
-                        System.out.println("Par X: " + verticeX + " Y: " + verticeY
-                                + ". Os vértices devem ser diferentes!");
+                        System.out.println("Par X: " + verticeX + " Y: "
+                                + verticeY + ". Os vértices devem ser diferentes!");
                         break;
 
-                    // Caso já exista uma aresta X Y
                     case 3:
-                        System.out.println("Par X: " + verticeX + " Y: " + verticeY
-                                + ". Essa aresta já foi inserida!");
+                        System.out.println("Par X: " + verticeX + " Y: "
+                                + verticeY + ". Essa aresta já foi inserida!");
                         break;
 
-                    // Caso já exista uma aresta Y X, ou seja, uma mão dupla
                     case 4:
-                        System.out.println("Par X: " + verticeX + " Y: " + verticeY
-                                + ". Não pode haver mão dupla!");
+                        System.out.println("Par X: " + verticeX + " Y: "
+                                + verticeY + ". Não pode haver mão dupla!");
                         break;
 
-                    // Caso forme um ciclo
                     case 5:
-                        System.out.println("Par X: " + verticeX + " Y: " + verticeY
-                                + ". Essa aresta formará um ciclo!");
+                        System.out.println("Par X: " + verticeX + " Y: "
+                                + verticeY + ". Essa aresta formará um ciclo!");
                         break;
                 }
             }
@@ -94,25 +87,31 @@ public class TrabalhoBombeiros {
         objGrafo.mostra();
 
         System.out.println("");
-        objGrafo.mostraCaminhos(1, verticeDestino);
+        // Chama o método que percorre o grafo a partir do vértice onde está
+        // o quartel dos bombeiros
+        objGrafo.mostraCaminhos(verticeBombeiros, verticeDestino);
         System.out.println("");
-        System.out.println("Existem: " + objGrafo.getQtdCaminho() + " caminho(s) até o incêndio.");
+        System.out.println("Existem: " + objGrafo.getQtdCaminho()
+                + " caminho(s) até o incêndio.");
 
     }
 
-    public static int tratamentoDeEntrada(int verticeX, int verticeY, Grafo objGrafo, int verticeDestino) {
+    // Valida os valores do arquivo de acordo com as especificações do exercício
+    public static int validaDeEntrada(int verticeX, int verticeY, Grafo objGrafo) {
+        // Caso os vértices sejam iguais
         if ((verticeX == verticeY) && (verticeX != 0 && verticeY != 0)) {
             return 2;
         }
-
+        // Caso a aresta já tenha sido inserida
         if (objGrafo.procuraA(verticeX, verticeY)) {
             return 3;
         }
-
+        // Caso a aresta já tenha sido inserida em um sentido
+        // Evita "mão-dupla"
         if (objGrafo.procuraA(verticeY, verticeX)) {
             return 4;
         }
-
+        // Caso a aresta forme um ciclo no grafo
         if (objGrafo.formaCiclo(verticeX, verticeY)) {
             return 5;
         }
